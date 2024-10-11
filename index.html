@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Image Grid Interaction with Anime.js</title>
+
+    <!-- Link to the Anime.js library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <style>
+      @font-face {
+        font-family: "GTFAdieu Black";
+        src: url("./fonts/GTFAdieuTRIAL-Black.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "GTFAdieu Bold";
+        src: url("./fonts/GTFAdieuTRIAL-Bold.otf") format("opentype");
+        font-weight: bold;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "GTFEkstra Medium";
+        src: url("./fonts/GTFEkstraTRIAL-Medium.otf") format("opentype");
+        font-weight: normal;
+        font-style: medium;
+      }
+
+      body {
+        font-family: "GTFAdieu Black", sans-serif; /* Default font for the body */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #1900ff;
+      }
+
+      main {
+        opacity: 1;
+        transition: opacity 0.4s ease-in-out;
+      }
+
+      .hide {
+        opacity: 0;
+      }
+
+      .about {
+        transition: opacity 0.4s ease-in-out;
+        font-family: "GTFEkstra Medium";
+        position: relative;
+      }
+
+      /* ONE */
+
+      .night-out {
+        text-align: center;
+        width: 100vw; /* Ensure the night-out is 80vw */
+        white-space: nowrap; /* Prevent wrapping */
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: fixed;
+        overflow: hidden;
+        left: 0;
+        top: 0;
+        z-index: 3;
+      }
+
+      .night-out .image-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10vh;
+        padding: 5vh;
+        box-sizing: border-box;
+        transition: transform 0.1s ease-out; /* Smooth transition for grid movement */
+      }
+
+      .night-out .image-wrapper {
+        max-height: 20vh;
+        opacity: 0; /* Start with opacity 0 (invisible) */
+      }
+
+      .night-out .image-wrapper img {
+        height: 100%;
+      }
+
+      .night-out .grid-wrapper {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        overflow: hidden; /* Ensure grid doesn't overflow the night-out */
+      }
+
+      .night-out .text-wrapper {
+        text-transform: uppercase;
+        font-size: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        color: white;
+      }
+
+      /* TWO */
+
+      .building {
+        text-align: center;
+        width: 100vw; /* Ensure the container is 80vw */
+        white-space: nowrap; /* Prevent wrapping */
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2;
+      }
+
+      .building .text-wrapper {
+        font-size: 110px; /* Initial large font size */
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .building .image-animation {
+        height: 0vh; /* Start with 0vh height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Ensure the image doesn't overflow */
+      }
+
+      .building .image-animation img {
+        height: 100%;
+        border-radius: 0.25rem;
+      }
+
+      .building span {
+        margin: 0 10px;
+      }
+
+      .isActive .image-animation {
+        transition: height .25s ease-in-out;
+
+      }
+
+      .isActive .image-animation:hover {
+        height: 50vh !important;
+      }
+
+      /* THREE */
+
+      .newlook {
+        text-align: center;
+        white-space: nowrap; /* Prevent wrapping */
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .newlook .text-wrapper {
+        text-transform: uppercase;
+        font-size: 20vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        line-height: 18vh;
+        color: #8200be;
+      }
+
+      .newlook .text-wrapper span {
+        position: relative;
+        display: inline-block;
+      }
+
+      .newlook .red-box {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .newlook .red-box img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain; /* Ensures the image fits the box */
+      }
+
+      .newlook .space {
+        width: 1rem;
+      }
+
+      .newlook .load-bar {
+        background-color: #8200be;
+      } 
+
+      .newlook  .letter:hover .red-box {
+        opacity: 1 !important;
+        scale: 3;
+
+      }
+
+      .newlook .letter:hover .visibility {
+        opacity: 0 !important;
+      }
+
+
+      /* GENERAL */
+
+      body {
+        transition: background-color 0.5s ease-in-out;
+      }
+
+      .wrappers {
+        transition: opacity 0.5s ease-in-out;
+        opacity: 1;
+      }
+
+      .faded {
+        opacity: 0;
+      }
+
+      /* NEXT BUTTON */
+
+      .next-button {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        font-size: 1.5rem;
+        display: none; /* Initially hidden */
+        background-color: rgba(255, 255, 255, 0.285);
+        backdrop-filter: blur(20px);
+        padding: 0.5rem;
+        align-items: center;
+        padding-bottom: 0.1rem;
+        padding-top: 0.2rem;
+        border-radius: 0.25rem;
+        gap: 0.25rem;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .load-bar {
+        position: absolute;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background-color: white;
+        z-index: -1;
+      }
+
+      .next-button .heading {
+        font-size: 0.5em;
+        line-height: 106%;
+        font-family: "GTFEkstra Medium";
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+        z-index: 1000;
+      }
+
+      .next-button .title {
+        text-transform: uppercase;
+      }
+
+      header {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        font-size: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.285);
+        backdrop-filter: blur(20px);
+        padding: 0.5rem;
+        align-items: center;
+        padding-bottom: 0.1rem;
+        padding-top: 0.2rem;
+        border-radius: 0.25rem;
+        gap: 0.25rem;
+        overflow: hidden;
+        cursor: pointer;
+        z-index: 100000;
+      }
+
+      .about {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        background-color: black;
+        width: 100vw;
+        overflow: scroll;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 3rem;
+        padding-top: 5rem;
+        box-sizing: border-box;
+        color: white;
+        pointer-events: none;
+      }
+
+      .clients-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .clients-wrapper span:hover {
+        color: #3655f9;
+      }
+
+      .about h1 {
+        text-transform: uppercase;
+        color: gray;
+        font-size: 0.8rem;
+        font-weight: inherit;
+        padding: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+      }
+
+      .about h2 {
+        font-size: inherit;
+        line-height: inherit;
+        font-weight: inherit;
+        padding: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+      }
+
+      .about h3 {
+        font-size: 0.8rem;
+        line-height: 0.8rem;
+        font-weight: inherit;
+        padding: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+      }
+
+      .team-wrapper span {
+        /* display: flex;
+        flex-direction: column; */
+      }
+
+      .bio {
+        font-size: 2rem;
+      }
+
+      .clients-wrapper {
+        flex: 0.5;
+      }
+
+      .content-wrapper {
+        flex: 1.5;
+        position: sticky;
+        top: 1rem;
+      }
+
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+      }
+
+      .team-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .separator {
+        display: flex;
+      }
+
+      .separator > * {
+        flex: 1;
+      }
+
+      .dadaBrand {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: "GTFAdieu Black";
+        font-size: 1.5rem;
+        gap: 2rem;
+      }
+
+      .da-random {
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      .about-content {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: opacity .2s ease-in-out;
+      }
+
+      .hidden {
+        opacity: 0;
+      }
+
+      .active {
+        z-index: 4;
+      }
+    </style>
+  </head>
+  <body>
+    <header>DADA GOLDBERG</header>
+    <div class="about hide">
+      <div class="da-random"></div>
+      <div class="about-content hidden">
+        <div class="clients-wrapper">
+          <h1>Clients</h1>
+          <span>181 Fremont</span>
+          <span>888 Brickell, Dolce&Gabbana</span>
+          <span>Alfredo Paredes Studio</span>
+          <span>Armadillo</span>
+          <span>Arper</span>
+          <span>Athena Calderone</span>
+          <span>Avdoo & Partners</span>
+          <span>Bergen Brooklyn</span>
+          <span>Bespoke Only</span>
+          <span>Brigette Romanek</span>
+          <span>Carl Hansen & Søn</span>
+          <span>Camilla Marcus</span>
+          <span>Chloe Crane-Leroux</span>
+          <span>Clive Lonstein</span>
+          <span>Colin King</span>
+          <span>Coral & Tusk</span>
+          <span>Coyuchi</span>
+          <span>Cultured Magazine</span>
+          <span>DUMAIS</span>
+          <span>Meyer Davis</span>
+          <span>Electric Bowery</span>
+          <span>Foscarini</span>
+          <span>Humanscale</span>
+          <span>HWKN</span>
+          <span>Il Buco</span>
+          <span>Il Buco Vita</span>
+          <span>Indian Creek Residences</span>
+          <span>In Common With</span>
+          <span>Jake Arnold</span>
+          <span>Jess Cooney</span>
+          <span>Jessica Schuster</span>
+          <span>JDS Development Group</span>
+          <span>Jenni Kayne</span>
+          <span>Jenni Kayne Home</span>
+          <span>Jeremiah Brent</span>
+          <span>John Chamberlain Estate</span>
+          <span>Klein</span>
+          <span>Landau Properties</span>
+          <span>Laura Kim</span>
+          <span>Mercedes-Benz Places Miami</span>
+          <span>Monse</span>
+          <span>Nickey Kehoe</span>
+          <span>Nina Freudenberger</span>
+          <span>ODA</span>
+          <span>PINCH</span>
+          <span>Pierre-Yves Rochon</span>
+          <span>RBW</span>
+          <span>R & Company</span>
+          <span>Salvatori</span>
+          <span>Sanayi313</span>
+          <span>Sarah Solis Design Studio</span>
+          <span>Stonehill Taylor</span>
+          <span>Studio DB</span>
+        </div>
+        <div class="content-wrapper">
+          <div class="bio">
+            Dada Goldberg delivers editorially-driven storytelling, high-impact
+            media and influencer relations, in-person and digital engagement
+          </div>
+          <div class="separator">
+            <div class="team-wrapper">
+              <h1>Our team</h1>
+              <span>
+                <h2>Rebecca Goldberg-Brodsky</h2>
+                <h3>CO-FOUNDER</h3>
+              </span>
+
+              <span>
+                <h2>Defne Aydintasbas</h2>
+                <h3>CO-FOUNDER</h3>
+              </span>
+
+              <span>
+                <h2>Ethan Elkins</h2>
+                <h3>MANAGING PARTNER</h3>
+              </span>
+
+              <span>
+                <h2>Eleanor Amari</h2>
+                <h3>CREATIVE AND BRAND DIRECTOR</h3>
+              </span>
+
+              <span>
+                <h2>Alexis Iorio</h2>
+                <h3>SENIOR DIRECTOR</h3>
+              </span>
+
+              <span>
+                <h2>Marianne Boschert</h2>
+                <h3>SENIOR DIRECTOR</h3>
+              </span>
+
+              <span>
+                <h2>Alina Heim</h2>
+                <h3>SENIOR DIGITAL ACCOUNT DIRECTOR</h3>
+              </span>
+
+              <span>
+                <h2>Angelica Poprawa</h2>
+                <h3>ACCOUNT DIRECTOR</h3>
+              </span>
+            </div>
+            <div class="dadaBrand">
+              <span>DADA PR</span>
+              <span> DADA DIGITAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main>
+      <div class="night-out one wrappers" data-bg-color="#1900ff">
+        <div class="grid-wrapper">
+          <div class="image-grid">
+            <div class="image-wrapper">
+              <img src="./nightout-img/01.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/02.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/03.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/04.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/05.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/06.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/07.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/08.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/09.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/10.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/11.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/12.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/14.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/15.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/16.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/17.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/18.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/19.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/20.png" />
+            </div>
+            <div class="image-wrapper">
+              <img src="./nightout-img/21.png" />
+            </div>
+          </div>
+        </div>
+        <div class="text-wrapper">
+          <span class="font-size">A</span>
+          <span class="font-size">Night</span>
+          <span class="font-size">Out</span>
+        </div>
+        <div class="next-button">
+          <div class="load-bar"></div>
+          <span class="heading">Next Up</span>
+          <span class="title">A New Building</span>
+        </div>
+      </div>
+
+      <!-- TWO -->
+
+      <div class="building two faded wrappers" data-bg-color="#adff00">
+        <div class="text-wrapper">
+          <span class="font-size">A</span>
+          <div class="image-animation">
+            <img src="./building-img/1.png" />
+          </div>
+          <div class="image-animation">
+            <img src="./building-img/4.png" />
+          </div>
+
+          <span class="font-size">New</span>
+
+          <div class="image-animation">
+            <img src="./building-img/3.png" />
+          </div>
+          <div class="image-animation">
+            <img src="./building-img/6.png" />
+          </div>
+          <span class="font-size">Building</span>
+        </div>
+
+        <div class="next-button">
+          <div class="load-bar"></div>
+          <span class="heading">Next Up</span>
+          <span class="title">A New Look</span>
+        </div>
+      </div>
+
+      <!-- THREE -->
+
+      <div class="newlook three faded wrappers" data-bg-color="white">
+        <div class="text-wrapper">
+          <span class="letter"><span class="visibility">A</span></span>
+          <span class="space"></span>
+          <span class="space"></span>
+
+          <span class="letter"><span class="visibility">N</span></span>
+          <span class="letter"><span class="visibility">E</span></span>
+          <span class="letter"><span class="visibility">W</span></span>
+          <span class="space"></span>
+          <span class="space"></span>
+
+          <span class="letter"><span class="visibility">L</span></span>
+          <span class="letter"><span class="visibility">O</span></span>
+          <span class="letter"><span class="visibility">O</span></span>
+          <span class="letter"><span class="visibility">K</span></span>
+        </div>
+        <div class="next-button">
+          <div class="load-bar"></div>
+          <span class="heading">Next Up</span>
+          <span class="title">A Night Out</span>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // randomSVG
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      // Check if two rectangles overlap
+      function isOverlapping(rect1, rect2) {
+        return !(
+          rect1.right < rect2.left ||
+          rect1.left > rect2.right ||
+          rect1.bottom < rect2.top ||
+          rect1.top > rect2.bottom
+        );
+      }
+
+      function generateRandomSvg() {
+        return `
+    <svg width="246" height="97" viewBox="0 0 246 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.22168 96.899V0.646484H46.5604C81.3488 0.646484 102.662 17.2844 102.662 48.7727C102.662 80.6736 81.2113 96.899 46.5604 96.899H0.22168ZM27.9974 73.2484H46.5604C65.8109 73.2484 74.8861 65.5482 74.8861 48.7727C74.8861 31.5848 65.3984 24.2971 46.5604 24.2971H27.9974V73.2484Z" fill="white"/>
+      <path d="M100.621 96.899L158.235 0.646484H188.073L245.687 96.899H212.824L203.748 80.6736H142.559L133.484 96.899H100.621ZM155.76 57.0229H190.548L173.223 25.6721L155.76 57.0229Z" fill="white"/>
+    </svg>`;
+      }
+
+      function placeRandomSvg() {
+        const container = document.querySelector(".da-random");
+        const placedSvgs = []; // To store positions of placed SVGs
+        const containerWidth = window.innerWidth;
+        const containerHeight = window.innerHeight;
+
+        let numSvgs = 10;
+
+        while (numSvgs > 0) {
+          // Create an SVG element
+          const div = document.createElement("div");
+          div.innerHTML = generateRandomSvg();
+          const svg = div.firstElementChild;
+
+          // Randomly scale the SVG (between 0.5x and 1.5x)
+          const scale = Math.random() * (1.5 - 0.5) + 0.5;
+          svg.style.transform = `scale(${scale})`;
+
+          // Randomly position the SVG
+          const svgWidth = 246 * scale; // Scaled width
+          const svgHeight = 97 * scale; // Scaled height
+          let randomX, randomY, rect;
+
+          // Try random positions until no overlap
+          let overlap = true;
+          let attempts = 0;
+          while (overlap && attempts < 100) {
+            randomX = randomInt(0, containerWidth - svgWidth);
+            randomY = randomInt(0, containerHeight - svgHeight);
+
+            // Create a rect object for the new SVG
+            rect = {
+              left: randomX,
+              top: randomY,
+              right: randomX + svgWidth,
+              bottom: randomY + svgHeight,
+            };
+
+            // Check if it overlaps with any already placed SVGs
+            overlap = placedSvgs.some((placedRect) =>
+              isOverlapping(placedRect, rect)
+            );
+            attempts++;
+          }
+
+          if (attempts < 100) {
+            // Set the SVG's position
+            svg.style.position = "absolute"; // Ensure absolute positioning
+            svg.style.left = `${randomX}px`;
+            svg.style.top = `${randomY}px`;
+
+            // Add the SVG to the container
+            container.appendChild(svg);
+
+            // Store the rect of the placed SVG
+            placedSvgs.push(rect);
+
+            numSvgs--;
+          } else {
+            // Give up after 100 attempts to place the SVG without overlap
+            console.log(
+              "Could not place SVG without overlap after 100 attempts"
+            );
+            break;
+          }
+        }
+      }
+
+      placeRandomSvg();
+
+      let currentSection = 1; // Track the current section (1 for "Night Out", 2 for "Building", 3 for "New Look")
+      let loadBarAnimation;
+      const headerInfo = document.querySelector("header");
+      let isAboutVisible = false; // Track if the about section is visible
+
+      // Set up the hover event listeners
+      headerInfo.addEventListener("mouseenter", () => {
+        if (isAboutVisible) {
+          headerInfo.textContent = "STORIES"; // Change text to 'STORIES' on hover when 'about' is visible
+        } else {
+          headerInfo.textContent = "ABOUT"; // Change text on hover normally
+        }
+      });
+
+      headerInfo.addEventListener("mouseleave", () => {
+        if (isAboutVisible) {
+          headerInfo.textContent = "ABOUT"; // Reset text when hovering is done, and 'about' is visible
+        } else {
+          headerInfo.textContent = "DADA GOLDBERG"; // Reset text when not hovering
+        }
+      });
+
+      function animateSvgsOnAbout() {
+        const svgs = document.querySelectorAll(".da-random svg");
+
+        anime
+          .timeline({
+            loop: false, // Loop the animation
+            easing: "easeInOutSine",
+          })
+          .add({
+            targets: svgs,
+            opacity: [0, 1], // Fade in from 0 to 1
+            duration: 50, // 1 second to fade in
+            delay: anime.stagger(50), // Delay each SVG by 500ms
+          })
+          .add({
+            targets: svgs,
+            opacity: [1, 0], // Fade out from 1 to 0
+            duration: 50, // 1 second to fade out
+            delay: anime.stagger(50), // Delay each SVG by 500ms
+            complete: function () {
+              document.querySelector('.about-content').classList.remove('hidden')
+            }
+          });
+      }
+
+      // Set up the click event listener
+      document.querySelector("header").addEventListener("click", function () {
+        if (isAboutVisible) {
+          document.querySelector('.about-content').classList.add('hidden')
+
+          // If the 'about' section is already visible, toggle back to 'main' content
+          document.querySelector("main").classList.remove("hide");
+          document.querySelector(".about").classList.add("hide");
+          document.body.style.backgroundColor = document.querySelector('.active').dataset.bgColor; // Reset background color
+          isAboutVisible = false; // Mark that the about section is now hidden
+          headerInfo.textContent = "DADA GOLDBERG"; // Reset the header text
+        } else {
+          // If the 'about' section is not visible, show the 'about' section
+          document.querySelector("main").classList.add("hide");
+          document.querySelector(".about").classList.remove("hide");
+          document.body.style.backgroundColor = "black";
+          isAboutVisible = true; // Mark that the about section is now visible
+          headerInfo.textContent = "ABOUT"; // Reset the header text
+          animateSvgsOnAbout();
+
+        }
+      });
+
+      ////
+
+      function resetHomeAnimation() {
+        // Reset the font sizes of the text
+        document.querySelector(
+          ".night-out .font-size:nth-child(1)"
+        ).style.fontSize = "5vw";
+        document.querySelector(
+          ".night-out .font-size:nth-child(2)"
+        ).style.fontSize = "5vw";
+        document.querySelector(
+          ".night-out .font-size:nth-child(3)"
+        ).style.fontSize = "5vw";
+
+        // Reset the opacity of the image wrappers
+        const imageWrappers = document.querySelectorAll(
+          ".night-out .image-wrapper"
+        );
+        imageWrappers.forEach((wrapper) => {
+          wrapper.style.opacity = 0;
+        });
+
+        // Reset the position of the image grid
+        const imageGrid = document.querySelector(".night-out .image-grid");
+        imageGrid.style.transform = "translate(0, 0)";
+      }
+
+      function resetBuildingAnimation() {
+        // Reset the font sizes of the text spans in the building section
+        const textSpans = document.querySelectorAll(".building .font-size");
+        textSpans.forEach((span) => {
+          span.style.fontSize = "110px"; // Reset to the initial size
+        });
+
+        // Reset the image sizes
+        const imagesBuilding = document.querySelectorAll(
+          ".building .image-animation"
+        );
+        imagesBuilding.forEach((image) => {
+          image.style.height = "0vh"; // Reset to the initial height
+        });
+      }
+
+      function resetNewLookAnimation() {
+        // Reset the visibility of the letters in the new look section
+        const visibility = document.querySelectorAll(".newlook .visibility");
+        visibility.forEach((letter) => {
+          letter.style.opacity = 0; // Reset to initial invisible state
+        });
+
+        // Remove any existing red-boxes
+        const redBoxes = document.querySelectorAll(".newlook .red-box");
+        redBoxes.forEach((box) => {
+          box.remove();
+        });
+      }
+
+      function home() {
+        resetHomeAnimation(); // Reset the animation state
+
+        let animationComplete = false;
+
+        document.querySelector(".three").classList.add("faded");
+        document.querySelector(".three").classList.remove("active");
+        document.querySelector(".one").classList.add("active");
+
+        document.querySelector(".one").classList.remove("faded");
+        document.body.style.backgroundColor =
+          document.querySelector(".one").dataset.bgColor;
+
+        const gridWrapper = document.querySelector(".night-out .grid-wrapper");
+        const imageGrid = document.querySelector(".night-out .image-grid");
+        const nextButton = document.querySelector(".night-out .next-button");
+        const loadBar = document.querySelector(".night-out .load-bar");
+
+        // Reset load bar
+        loadBar.style.width = "0%";
+
+        // Clear previous event listener if any
+        nextButton.removeEventListener("click", skipAnimation);
+
+        // Add the skipAnimation function to the next button
+        nextButton.addEventListener("click", skipAnimation);
+
+        // Mouse movement function
+        function handleMouseMove(e) {
+          if (!animationComplete) return;
+
+          const { offsetWidth: width, offsetHeight: height } = gridWrapper;
+          const { clientX: x, clientY: y } = e;
+
+          const xPercent = (x / width) * 100;
+          const yPercent = (y / height) * 100;
+
+          imageGrid.style.transform = `translate(${(xPercent - 50) * 0.5}%, ${
+            (yPercent - 50) * 0.5
+          }%)`;
+        }
+
+        // Anime.js animation for fading in image wrappers
+        const imageWrappers = document.querySelectorAll(
+          ".night-out .image-wrapper"
+        );
+
+        anime
+          .timeline({
+            easing: "easeInOutQuad",
+            duration: 800,
+          })
+          .add({
+            targets: ".night-out .font-size:nth-child(1)", // "A"
+            fontSize: ["5vw", "25vh"],
+            duration: 500,
+            delay: 500, // Start after 1 second
+          })
+          .add({
+            targets: ".night-out .font-size:nth-child(2)", // "Night"
+            fontSize: ["5vw", "25vh"],
+            duration: 500,
+          })
+          .add({
+            targets: ".night-out .font-size:nth-child(3)", // "Out"
+            fontSize: ["5vw", "25vh"],
+            duration: 500,
+            complete: function () {
+              anime({
+                targets: imageWrappers,
+                opacity: 1,
+                easing: "easeInOutQuad",
+                delay: anime.stagger(100),
+                duration: 100,
+                complete: function () {
+                  animationComplete = true;
+
+                  // Display the next button after the animation completes
+                  nextButton.style.display = "flex";
+
+                  // Grow the load bar to 100% over 15 seconds
+                  loadBarAnimation = anime({
+                    targets: loadBar,
+                    width: "100%",
+                    duration: 15000, // 15 seconds
+                    easing: "linear",
+                    complete: function () {
+                      building();
+                    },
+                  });
+                },
+              });
+            },
+          });
+
+        // Add mousemove event listener after animation completion
+        gridWrapper.addEventListener("mousemove", handleMouseMove);
+      }
+
+      function building() {
+        resetBuildingAnimation(); // Reset the animation state
+        document.querySelector(".one").classList.remove("active");
+        document.querySelector(".two").classList.add("active");
+
+        document.querySelector(".one").classList.add("faded");
+        document.querySelector(".building").classList.remove("faded");
+        const nextButton = document.querySelector(".building .next-button");
+        const loadBar = document.querySelector(".building .load-bar");
+
+        document.body.style.backgroundColor =
+          document.querySelector(".building").dataset.bgColor;
+
+        // Reset load bar
+        loadBar.style.width = "0%";
+
+        // Clear previous event listener if any
+        nextButton.removeEventListener("click", skipAnimation);
+
+        // Add the skipAnimation function to the next button
+        nextButton.addEventListener("click", skipAnimation);
+
+        const imagesBuilding = document.querySelectorAll(
+          ".building .image-animation"
+        );
+        const textSpans = document.querySelectorAll(".building .font-size");
+
+        const startFontSize = 110; // 110px at the beginning (corresponds to 8vw)
+        const endFontSize = 40; // 26px at the end
+        setTimeout(() => {
+          anime({
+            targets: imagesBuilding,
+            height: [
+              { value: "30vh", duration: 1000, easing: "easeInOutQuad" }, // Grow to 30vh
+              {
+                value: "10vh",
+                duration: 1000,
+                delay: anime.stagger(333),
+                easing: "easeInOutQuad",
+              }, // Shrink to 10vh
+            ],
+            delay: anime.stagger(750),
+            update: function (anim) {
+              const progress = anim.progress / 100;
+              const currentFontSize =
+                startFontSize - (startFontSize - endFontSize) * progress;
+
+              textSpans.forEach((span) => {
+                span.style.fontSize = `${currentFontSize}px`;
+              });
+            },
+            complete: function () {
+              nextButton.style.display = "flex";
+              document.querySelector('.building').classList.add('isActive')
+              loadBarAnimation = anime({
+                targets: loadBar,
+                width: "100%",
+                duration: 15000,
+                easing: "linear",
+                complete: function () {
+                  newLook();
+                  document.querySelector('.building').classList.remove('isActive')
+
+                },
+              });
+            },
+          });
+        }, 1000);
+      }
+
+      function newLook() {
+        resetNewLookAnimation(); // Reset the animation state
+        document.querySelector(".two").classList.remove("active");
+
+        document.querySelector(".two").classList.add("faded");
+        document.querySelector(".three").classList.add("active");
+
+        document.querySelector(".newlook").classList.remove("faded");
+        const nextButton = document.querySelector(".newlook .next-button");
+        const loadBar = document.querySelector(".newlook .load-bar");
+        document.body.style.backgroundColor =
+          document.querySelector(".newlook").dataset.bgColor;
+
+        loadBar.style.width = "0%";
+
+        nextButton.removeEventListener("click", skipAnimation);
+
+        nextButton.addEventListener("click", skipAnimation);
+
+        const letters = document.querySelectorAll(".newlook .letter");
+        const visibility = document.querySelectorAll(".newlook .visibility");
+
+        const images = [
+          "./img/01.png",
+          "./img/02.png",
+          "./img/03.png",
+          "./img/04.png",
+          "./img/05.png",
+          "./img/06.png",
+          "./img/07.png",
+          "./img/08.png",
+        ];
+
+        letters.forEach((letter, index) => {
+          const { offsetWidth: width, offsetHeight: height } = letter;
+
+          const redBox = document.createElement("div");
+          redBox.classList.add("red-box");
+          redBox.style.width = `${width}px`;
+          redBox.style.height = `${height}px`;
+
+          const img = document.createElement("img");
+          img.src = images[index % images.length];
+
+          redBox.appendChild(img);
+          letter.appendChild(redBox);
+        });
+
+        const redBoxes = document.querySelectorAll(".newlook .red-box");
+
+        const redBoxTimeline = anime
+          .timeline({
+            easing: "easeInOutQuad",
+            duration: 1,
+            autoplay: false,
+          })
+          .add({
+            targets: redBoxes,
+            opacity: [1, 0],
+            delay: anime.stagger(100),
+          });
+
+        const letterTimeline = anime
+          .timeline({
+            easing: "easeInOutQuad",
+            duration: 1,
+            autoplay: false,
+          })
+          .add({
+            targets: visibility,
+            opacity: [0, 1],
+            delay: anime.stagger(100),
+            complete: function () {
+              animationComplete = true;
+              nextButton.style.display = "flex";
+
+              loadBarAnimation = anime({
+                targets: loadBar,
+                width: "100%",
+                duration: 15000,
+                easing: "linear",
+                complete: function () {
+                  home(); // Loop back to the first section
+                },
+              });
+            },
+          });
+
+        setTimeout(() => {
+          redBoxTimeline.play();
+          letterTimeline.play();
+        }, 1000);
+      }
+
+      function skipAnimation() {
+        if (loadBarAnimation) {
+          loadBarAnimation.pause(); // Stop the load bar animation
+        }
+
+        if (currentSection === 1) {
+          building();
+        } else if (currentSection === 2) {
+          newLook();
+        } else {
+          home();
+        }
+
+        currentSection = (currentSection % 3) + 1; // Move to the next section in a loop
+      }
+
+      home(); // Start with the home animation
+    </script>
+  </body>
+</html>
